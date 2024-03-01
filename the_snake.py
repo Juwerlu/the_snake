@@ -71,7 +71,7 @@ class Apple(GameObject):
         """Метод устанавливающий случайное положение яблока на игровом поле."""
         self.width_position = randint(0, GRID_WIDTH - 1) * GRID_SIZE
         self.height_position = randint(0, GRID_HEIGHT - 1) * GRID_SIZE
-        self.position = [self.width_position, self.height_position]
+        self.position = (self.width_position, self.height_position)
         return self.position
 
     def draw(self, surface):
@@ -190,7 +190,7 @@ def main():
         snake.move()
         apple.draw(screen)
         snake.draw(screen)
-        if snake.positions[0][0] == apple.position[0] and snake.positions[0][1] == apple.position[1]:
+        if apple.position == snake.positions[0]:
             snake.length += 1
             apple.randomize_position()
             apple.draw(screen)
