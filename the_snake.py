@@ -177,7 +177,7 @@ def main():
     while True:
         clock.tick(SPEED)
         handle_keys(snake)
-        snake.update_direction() 
+        snake.update_direction()
         snake.move()
         snake.draw(screen)
         if apple.position == snake.positions[0]:
