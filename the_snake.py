@@ -122,7 +122,8 @@ class Snake(GameObject):
             (self.head_position[1] + GRID_SIZE * self.direction[1])
             % SCREEN_HEIGHT
         )
-        self.reset()
+        if self.head_position in self.positions:
+            self.reset()
         self.positions.insert(0, self.head_position)
         if len(self.positions) > self.length:
             self.last = self.positions.pop()
@@ -144,9 +145,8 @@ class Snake(GameObject):
         """Метод сбрасывающий змейку в начальное состояние
         после столкновения с собой.
         """
-        if self.head_position in self.positions:
-            self.__init__()
-            screen.fill(BOARD_BACKGROUND_COLOR)
+        self.__init__()
+        screen.fill(BOARD_BACKGROUND_COLOR)
 
 
 def handle_keys(game_object):
