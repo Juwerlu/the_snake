@@ -83,27 +83,23 @@ class Apple(GameObject):
     Описывает яблоко и действия с ним.
     """
 
-    def __init__(self):
+    def __init__(self,
+                 ban_position=((SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2), )):
         """Метод, который инициализирует базовые атрибуты Яблока."""
         super().__init__(body_color=APPLE_COLOR)
-        self.randomize_position(
-            ban_position=((SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2), )
-        )
+        self.randomize_position(ban_position)
 
     def randomize_position(self, ban_position):
         """Метод устанавливающий случайное положение яблока на игровом поле."""
         position = self.position
-        if len(ban_position) <= GRID_WIDTH * GRID_HEIGHT - 2:
-            while position in ban_position:
-                position = (randint(0, GRID_WIDTH - 1) * GRID_SIZE,
-                            randint(0, GRID_HEIGHT - 1) * GRID_SIZE)
-                self.position = position
-        else:
-            self.position = None
+        while position in ban_position:
+            position = (randint(0, GRID_WIDTH - 1) * GRID_SIZE,
+                        randint(0, GRID_HEIGHT - 1) * GRID_SIZE)
+        self.position = position
 
-    def draw(self, position):
+    def draw(self):
         """Метод отрисовывающий Яблоко на игровой поверхности."""
-        super().draw(position)
+        super().draw(position=self.position)
 
 
 class Snake(GameObject):
@@ -137,9 +133,9 @@ class Snake(GameObject):
         if len(self.positions) > self.length:
             self.last = self.positions.pop()
 
-    def draw(self, position):
+    def draw(self):
         """Метод отрисовывающий змейку на экране."""
-        super().draw(position)
+        super().draw(position=self.get_head_position())
 
         if self.last:
             super().erase(self.last)
@@ -194,24 +190,25 @@ def main():
     """
     snake = Snake()
     apple = Apple()
-    apple.draw(position=apple.position)
+    apple.draw()
 
     while True:
         clock.tick(SPEED)
         handle_keys(snake)
         snake.update_direction()
         snake.move()
-        snake.draw(position=snake.get_head_position())
+        snake.draw()
         if apple.position == snake.get_head_position():
             snake.length += 1
-            apple.randomize_position(ban_position=snake.positions)
+            if len(snake.positions) <= GRID_WIDTH * GRID_HEIGHT - 2:
+                apple.randomize_position(ban_position=snake.positions)
+            else:
+                game_over()
             if apple.position:
-                apple.draw(position=apple.position)
+                apple.draw()
         if snake.get_head_position() in snake.positions[1:]:
             snake.reset()
-            apple.draw(position=apple.position)
-        if snake.length > GRID_HEIGHT * GRID_WIDTH - 2:
-            game_over()
+            apple.draw()
         pygame.display.update()
 
 
