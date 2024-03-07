@@ -39,7 +39,7 @@ APPLE_COLOR = (255, 0, 0)
 SNAKE_COLOR = (0, 255, 0)
 
 # Скорость движения змейки:
-SPEED = 20
+SPEED = 15
 
 # Настройка игрового окна:
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
@@ -63,16 +63,16 @@ class GameObject:
     def draw(self, position, surface=screen):
         """Метод, который отрисовывает игровой объект."""
         rect = pygame.Rect(
-            (position),
+            position,
             (GRID_SIZE, GRID_SIZE)
         )
         pygame.draw.rect(surface, self.body_color, rect)
         pygame.draw.rect(surface, BORDER_COLOR, rect, 1)
 
-    def erase(self, last, surface=screen):
+    def erase(self, position, surface=screen):
         """Метод стирающий последний элемент игрового объекта."""
         last_rect = pygame.Rect(
-            (last),
+            position,
             (GRID_SIZE, GRID_SIZE)
         )
         pygame.draw.rect(surface, BOARD_BACKGROUND_COLOR, last_rect)
@@ -83,13 +83,13 @@ class Apple(GameObject):
     Описывает яблоко и действия с ним.
     """
 
-    def __init__(self,
-                 ban_position=((SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2), )):
+    def __init__(self):
         """Метод, который инициализирует базовые атрибуты Яблока."""
         super().__init__(body_color=APPLE_COLOR)
-        self.randomize_position(ban_position)
+        self.randomize_position()
 
-    def randomize_position(self, ban_position):
+    def randomize_position(self, ban_position=((SCREEN_WIDTH // 2,
+                                                SCREEN_HEIGHT // 2), )):
         """Метод устанавливающий случайное положение яблока на игровом поле."""
         position = self.position
         while position in ban_position:
@@ -135,10 +135,9 @@ class Snake(GameObject):
 
     def draw(self):
         """Метод отрисовывающий змейку на экране."""
-        super().draw(position=self.get_head_position())
-
         if self.last:
             super().erase(self.last)
+        super().draw(position=self.get_head_position())
 
     def get_head_position(self):
         """Метод возвращающий позицию головы змейки."""
